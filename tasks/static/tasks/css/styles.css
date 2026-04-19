@@ -1,0 +1,352 @@
+body {
+  min-height: 100vh;
+  background: radial-gradient(circle at top left, rgba(79, 70, 229, 0.16), transparent 28%),
+              radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.1), transparent 28%),
+              linear-gradient(180deg, #0f172a 0%, #111827 34%, #1e293b 100%);
+  color: #e2e8f0;
+}
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.mystic-hero {
+  background: radial-gradient(circle at top left, rgba(59, 130, 246, 0.16), transparent 34%),
+              radial-gradient(circle at bottom right, rgba(148, 163, 184, 0.18), transparent 28%),
+              rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  backdrop-filter: blur(12px);
+}
+
+.hero-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  text-shadow: 0 0 18px rgba(255, 255, 255, 0.08);
+}
+
+.btn-glow {
+  color: #fff;
+  background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 0 2rem rgba(59, 130, 246, 0.3);
+}
+
+.btn-glow:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 2.4rem rgba(59, 130, 246, 0.45);
+}
+
+.card {
+  background: rgba(8, 12, 24, 0.82);
+  color: #edf2f7;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.26);
+  backdrop-filter: blur(14px);
+}
+
+.glass-panel,
+.card .card-header,
+.task-card-header,
+.task-card-body,
+.summary-card,
+.stats-card,
+.stats-chart-card,
+.stats-breakdown-card {
+  background: rgba(10, 16, 32, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+}
+
+.glass-panel {
+  padding: 1.5rem;
+  border-radius: 1.5rem;
+}
+
+.card h1,
+.card h2,
+.card h3,
+.glass-panel h1,
+.glass-panel h2,
+.glass-panel h3 {
+  color: #f8fafc;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.35);
+  font-weight: 700;
+}
+
+.card p,
+.card .task-label,
+.card .badge,
+.glass-panel p,
+.glass-panel .task-label,
+.glass-panel .badge {
+  color: #edf2f7;
+}
+
+.card .badge,
+.btn-primary,
+.btn-outline-primary,
+.btn-outline-secondary,
+.btn-outline-info,
+.btn-outline-light,
+.btn-success {
+  color: #fff;
+}
+
+.btn-outline-light {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-outline-light:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.text-muted,
+.text-light,
+.badge.bg-light,
+.task-category,
+.task-label {
+  color: #000000 !important;
+}
+
+.summary-card {
+  border-radius: 1.25rem;
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.96), rgba(15, 23, 42, 0.92));
+  border: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.section-title {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.task-card {
+  border: 1px solid rgba(71, 85, 105, 0.2);
+  background: rgba(15, 23, 42, 0.92);
+}
+
+.task-card-header {
+  background: rgba(30, 41, 59, 0.8);
+}
+
+.task-card-body {
+  background: rgba(15, 23, 42, 0.82);
+}
+
+.app-content {
+  flex: 1;
+}
+
+.navbar-brand {
+  letter-spacing: 0.08em;
+}
+
+.page-head {
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  box-shadow: 0 1.25rem 2rem rgba(15, 23, 42, 0.18);
+  padding: 2rem;
+  border-radius: 1.25rem;
+}
+
+.summary-card {
+  border-radius: 1.25rem;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.88));
+  border: none;
+}
+
+.task-form-card,
+.info-panel-card,
+.task-card {
+  border-radius: 1.35rem;
+}
+
+.task-card {
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+}
+
+.task-card-header {
+  background: rgba(15, 23, 42, 0.88);
+}
+
+.task-card-body {
+  background: rgba(15, 23, 42, 0.95);
+}
+
+.task-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.card .badge {
+  letter-spacing: 0.01em;
+}
+
+.task-category {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.task-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.priority-high {
+  border: 1px solid rgba(14, 165, 233, 0.7);
+}
+
+.priority-critical {
+  border: 1px solid rgba(251, 191, 36, 0.85);
+  box-shadow: 0 0 0 0.15rem rgba(251, 191, 36, 0.16);
+}
+
+.urgent-task {
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.18);
+}
+
+.done-task {
+  opacity: 0.65;
+}
+
+.task-card .card-footer {
+  background: rgba(15, 23, 42, 0.92);
+}
+
+.task-card .btn {
+  min-width: 120px;
+}
+
+.badge-priority-critical {
+  background-color: #dc2626;
+}
+
+.badge-priority-high {
+  background-color: #0ea5e9;
+}
+
+.badge-priority-medium {
+  background-color: #f59e0b;
+  color: #111827;
+}
+
+.badge-priority-low {
+  background-color: #6b7280;
+}
+
+.info-panel-card {
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.88), rgba(15, 23, 42, 0.98));
+}
+
+.footer {
+  background: rgba(15, 23, 42, 0.95);
+}
+
+.gradient-header {
+  background: radial-gradient(circle at top left, rgba(59, 130, 246, 0.16), transparent 30%),
+              radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.14), transparent 25%),
+              rgba(15, 23, 42, 0.9);
+  border-radius: 1.5rem;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.card-summary {
+  min-height: 120px;
+  border-radius: 1.25rem;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+.task-form-card .form-control,
+.task-form-card .form-select,
+.task-form-card .form-control:focus,
+.task-form-card .form-select:focus {
+  background: rgba(15, 23, 42, 0.95);
+  color: #e2e8f0;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+}
+
+.task-form-card .form-control::placeholder {
+  color: rgba(226, 232, 240, 0.7);
+}
+
+.task-form-card .form-control:focus,
+.task-form-card .form-select:focus {
+  border-color: rgba(59, 130, 246, 0.75);
+  box-shadow: 0 0 0 0.18rem rgba(59, 130, 246, 0.18);
+  background: rgba(15, 23, 42, 1);
+}
+
+.btn-primary,
+.btn-outline-primary,
+.btn-success,
+.btn-outline-secondary {
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.btn-primary:hover,
+.btn-success:hover,
+.btn-outline-secondary:hover,
+.btn-outline-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0.75rem 1.5rem rgba(15, 23, 42, 0.08);
+}
+
+.card h3,
+.card h2,
+.card h1 {
+  letter-spacing: -0.03em;
+}
+
+.stats-card,
+.stats-chart-card,
+.stats-breakdown-card {
+  border-radius: 1.25rem;
+  overflow: hidden;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.stats-card .card-body,
+.stats-chart-card .card-body,
+.stats-breakdown-card .card-body {
+  min-height: 150px;
+  background: transparent;
+  color: #000000;
+}
+
+.chart-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 300px;
+}
+
+.legend-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 0.75rem;
+  vertical-align: middle;
+}
+
+.list-group-item {
+  border: none;
+  padding-left: 0;
+  padding-right: 0;
+  background: rgba(15, 23, 42, 0.9);
+  color: #e2e8f0;
+}
+
+.task-card {
+  border: 1px solid rgba(71, 85, 105, 0.25);
+}
+
+.task-card-body {
+  background: rgba(15, 23, 42, 0.92);
+}

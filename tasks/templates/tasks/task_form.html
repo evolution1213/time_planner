@@ -1,0 +1,82 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}Додати завдання — Time Planner{% endblock %}
+
+{% block content %}
+  <div class="page-head mb-4">
+    <h1 class="display-6">Новий таск</h1>
+    <p class="lead text-muted">Заповніть форму, щоб додати завдання до плану та розпочати роботу.</p>
+  </div>
+
+  <div class="row gy-4">
+    <div class="col-12 col-xl-8">
+      <div class="card shadow-sm task-form-card">
+        <div class="card-body">
+          <h2 class="h5 mb-4">Деталі завдання</h2>
+          <form method="post" novalidate>
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label">Назва</label>
+                {{ form.title }}
+                {{ form.title.errors }}
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label">Категорія</label>
+                {{ form.category }}
+                {{ form.category.errors }}
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label">Статус</label>
+                {{ form.status }}
+                {{ form.status.errors }}
+              </div>
+              <div class="col-12">
+                <label class="form-label">Опис</label>
+                {{ form.description }}
+                {{ form.description.errors }}
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label">Пріоритет</label>
+                {{ form.priority }}
+                {{ form.priority.errors }}
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label">Deadline</label>
+                {{ form.deadline }}
+                {{ form.deadline.errors }}
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label">Planned duration</label>
+                {{ form.duration }}
+                {{ form.duration.errors }}
+              </div>
+            </div>
+
+            <div class="mt-4 d-flex flex-wrap gap-3">
+              <button type="submit" class="btn btn-primary btn-lg">Зберегти завдання</button>
+              <a href="{% url 'task_list' %}" class="btn btn-outline-secondary btn-lg">Відмінити</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-4">
+      <div class="card shadow-sm info-panel-card border-start border-4 border-primary">
+        <div class="card-body">
+          <h3 class="h6 text-uppercase text-muted mb-3">Поради</h3>
+          <ul class="list-unstyled lh-lg">
+            <li>• Використовуйте пріоритет Critical для найважливіших задач.</li>
+            <li>• Deadline допоможе відстежити прострочені задачі.</li>
+            <li>• Початок роботи можна зафіксувати кнопкою Start Timer.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

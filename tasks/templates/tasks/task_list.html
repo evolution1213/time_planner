@@ -1,0 +1,383 @@
+{% extends 'tasks/base.html' %}
+{% load static %}
+
+{% block title %}Time Planner — Загадкова панель{% endblock %}
+
+{% block content %}
+      <section class="mystic-hero p-4 mb-5 rounded-4 shadow-lg">
+        <div class="row align-items-center gy-4">
+          <div class="col-lg-8">
+            <span class="hero-label text-uppercase text-white fw-semibold">Таємниця часу</span>
+            <h1 class="display-5 text-white mb-3">Керуй завданнями, як маг керує ритуалом.</h1>
+            <p class="text-light opacity-75 mb-4">Управляй пріоритетами, знаходь прострочені виклики і відкривай приховану потужність дня.</p>
+            <div class="d-flex flex-wrap gap-2">
+              <a href="#overdue" class="btn btn-outline-light btn-action">Прострочені</a>
+              <a href="#today" class="btn btn-light btn-action">Сьогодні</a>
+              <a href="#week" class="btn btn-outline-light btn-action">Тиждень</a>
+              <a href="#future" class="btn btn-outline-light btn-action">Майбутнє</a>
+            </div>
+          </div>
+          <div class="col-lg-4 text-lg-end">
+            <a href="{% url 'task_create' %}" class="btn btn-glow btn-lg">Додати нову задачу</a>
+          </div>
+        </div>
+      </section>
+
+
+      <div class="d-flex flex-column flex-md-row align-items-start justify-content-between mb-4">
+        <div>
+          <p class="text-muted mb-3">Завдання розподілено на Прострочені, Сьогодні, Цього тижня та Майбутні.</p>
+          <div class="btn-toolbar gap-2">
+            <a href="#overdue" class="btn btn-outline-primary btn-action">Перейти до Завдань</a>
+            <a href="#today" class="btn btn-outline-secondary btn-action">Сьогодні</a>
+            <a href="#week" class="btn btn-outline-secondary btn-action">Цього тижня</a>
+            <a href="#future" class="btn btn-outline-secondary btn-action">Майбутні</a>
+            <a href="{% url 'task_stats' %}" class="btn btn-outline-info btn-action">Статистика</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-12 col-md-3">
+          <div class="card shadow-sm summary-card border-start border-4 border-danger">
+            <div class="card-body">
+              <p class="text-uppercase text-muted mb-2">Прострочені</p>
+              <h2 class="mb-0">{{ overdue_tasks|length }}</h2>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-3">
+          <div class="card shadow-sm summary-card border-start border-4 border-primary">
+            <div class="card-body">
+              <p class="text-uppercase text-muted mb-2">Сьогодні</p>
+              <h2 class="mb-0">{{ today_tasks|length }}</h2>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-3">
+          <div class="card shadow-sm summary-card border-start border-4 border-warning">
+            <div class="card-body">
+              <p class="text-uppercase text-muted mb-2">Цього тижня</p>
+              <h2 class="mb-0">{{ week_tasks|length }}</h2>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-3">
+          <div class="card shadow-sm summary-card border-start border-4 border-success">
+            <div class="card-body">
+              <p class="text-uppercase text-muted mb-2">Майбутні</p>
+              <h2 class="mb-0">{{ future_tasks|length }}</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section id="overdue" class="mb-5">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h2 class="h5 mb-0">Прострочені <span class="badge bg-secondary">{{ overdue_tasks|length }}</span></h2>
+        </div>
+        {% if overdue_tasks %}
+          <div class="row g-3">
+            {% for task in overdue_tasks %}
+              <div class="col-12 col-lg-6">
+                <div class="card h-100 shadow-sm priority-{{ task.priority }}{% if task.status == Task.Status.DONE %} done-task{% endif %}{% if task.is_urgent %} urgent-task{% endif %}">
+                  <div class="card-header d-flex justify-content-between align-items-start">
+                    <div>
+                      <h3 class="h6 mb-1">{{ task.title }}</h3>
+                      <p class="text-muted mb-0">{{ task.category.name|default:'Без категорії' }}</p>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="form-check form-switch mb-0">
+                        <input class="form-check-input task-done-toggle" type="checkbox" id="task-done-{{ task.pk }}" data-task-id="{{ task.pk }}" {% if task.status == Task.Status.DONE %}checked{% endif %}>
+                        <label class="form-check-label text-white small" for="task-done-{{ task.pk }}">Виконано</label>
+                      </div>
+                    </div>
+                    {% if task.priority == 'critical' %}
+                      <span class="badge bg-danger text-dark task-label">{{ task.get_priority_display }}</span>
+                    {% elif task.priority == 'high' %}
+                      <span class="badge bg-info text-dark task-label">{{ task.get_priority_display }}</span>
+                    {% elif task.priority == 'medium' %}
+                      <span class="badge bg-warning text-dark task-label">{{ task.get_priority_display }}</span>
+                    {% else %}
+                      <span class="badge bg-secondary text-dark task-label">{{ task.get_priority_display }}</span>
+                    {% endif %}
+                  </div>
+                  <div class="card-body">
+                    <p class="mb-3 text-truncate">{{ task.description|default:'Немає опису' }}</p>
+                    <div class="mb-3">
+                      {% if task.status == Task.Status.BACKLOG %}
+                        <span class="badge bg-secondary task-label">{{ task.get_status_display }}</span>
+                      {% elif task.status == Task.Status.TODO %}
+                        <span class="badge bg-primary task-label">{{ task.get_status_display }}</span>
+                      {% elif task.status == Task.Status.IN_PROGRESS %}
+                        <span class="badge bg-info task-label">{{ task.get_status_display }}</span>
+                      {% else %}
+                        <span class="badge bg-success task-label">{{ task.get_status_display }}</span>
+                      {% endif %}
+                      <span class="badge bg-light text-black task-label">Deadline: {{ task.deadline }}</span>
+                      <span class="badge bg-light text-black task-label">{{ task.deadline_remaining_display }}</span>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                      <span class="badge bg-light text-black task-label">Planned: {{ task.get_duration_display }}</span>
+                      <span class="badge bg-light text-black task-label">Actual: {{ task.get_actual_duration_display }}</span>
+                      {% if task.start_time %}
+                        <span class="badge bg-light text-black task-label">Started: {{ task.start_time|date:'H:i, d.m.Y' }}</span>
+                      {% endif %}
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                      <form action="{% url 'task_start_timer' task.pk %}" method="post" class="m-0">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-success" {% if task.start_time %}disabled{% endif %}>Start Timer</button>
+                      </form>
+                      <form action="{% url 'task_change_status' task.pk %}" method="post" class="d-flex align-items-center m-0">
+                        {% csrf_token %}
+                        <select name="status" class="form-select form-select-sm me-2" style="min-width: 150px;">
+                          {% for value, label in Task.Status.choices %}
+                            <option value="{{ value }}" {% if task.status == value %}selected{% endif %}>{{ label }}</option>
+                          {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="alert alert-secondary mb-0">Немає завдань у цій категорії.</div>
+        {% endif %}
+      </section>
+
+      <section id="today" class="mb-5">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h2 class="h5 mb-0">Сьогодні <span class="badge bg-secondary">{{ today_tasks|length }}</span></h2>
+        </div>
+        {% if today_tasks %}
+          <div class="row g-3">
+            {% for task in today_tasks %}
+              <div class="col-12 col-lg-6">
+                <div class="card h-100 shadow-sm priority-{{ task.priority }}{% if task.status == Task.Status.DONE %} done-task{% endif %}{% if task.is_urgent %} urgent-task{% endif %}">
+                  <div class="card-header d-flex justify-content-between align-items-start">
+                    <div>
+                      <h3 class="h6 mb-1">{{ task.title }}</h3>
+                      <p class="text-muted mb-0">{{ task.category.name|default:'Без категорії' }}</p>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="form-check form-switch mb-0">
+                        <input class="form-check-input task-done-toggle" type="checkbox" id="task-done-{{ task.pk }}" data-task-id="{{ task.pk }}" {% if task.status == Task.Status.DONE %}checked{% endif %}>
+                        <label class="form-check-label text-white small" for="task-done-{{ task.pk }}">Виконано</label>
+                      </div>
+                    </div>
+                    {% if task.priority == 'critical' %}
+                      <span class="badge bg-danger text-dark task-label">{{ task.get_priority_display }}</span>
+                    {% elif task.priority == 'high' %}
+                      <span class="badge bg-info text-dark task-label">{{ task.get_priority_display }}</span>
+                    {% elif task.priority == 'medium' %}
+                      <span class="badge bg-warning text-dark task-label">{{ task.get_priority_display }}</span>
+                    {% else %}
+                      <span class="badge bg-secondary text-dark task-label">{{ task.get_priority_display }}</span>
+                    {% endif %}
+                  </div>
+                  <div class="card-body">
+                    <p class="mb-3 text-truncate">{{ task.description|default:'Немає опису' }}</p>
+                    <div class="mb-3">
+                      {% if task.status == Task.Status.BACKLOG %}
+                        <span class="badge bg-secondary task-label">{{ task.get_status_display }}</span>
+                      {% elif task.status == Task.Status.TODO %}
+                        <span class="badge bg-primary task-label">{{ task.get_status_display }}</span>
+                      {% elif task.status == Task.Status.IN_PROGRESS %}
+                        <span class="badge bg-info task-label">{{ task.get_status_display }}</span>
+                      {% else %}
+                        <span class="badge bg-success task-label">{{ task.get_status_display }}</span>
+                      {% endif %}
+                      <span class="badge bg-light text-dark task-label">Deadline: {{ task.deadline }}</span>
+                      <span class="badge bg-light text-dark task-label">{{ task.deadline_remaining_display }}</span>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                      <span class="badge bg-light text-dark task-label">Planned: {{ task.get_duration_display }}</span>
+                      <span class="badge bg-light text-dark task-label">Actual: {{ task.get_actual_duration_display }}</span>
+                      {% if task.start_time %}
+                        <span class="badge bg-light text-dark task-label">Started: {{ task.start_time|date:'H:i, d.m.Y' }}</span>
+                      {% endif %}
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                      <form action="{% url 'task_start_timer' task.pk %}" method="post" class="m-0">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-success" {% if task.start_time %}disabled{% endif %}>Start Timer</button>
+                      </form>
+                      <form action="{% url 'task_change_status' task.pk %}" method="post" class="d-flex align-items-center m-0">
+                        {% csrf_token %}
+                        <select name="status" class="form-select form-select-sm me-2" style="min-width: 150px;">
+                          {% for value, label in Task.Status.choices %}
+                            <option value="{{ value }}" {% if task.status == value %}selected{% endif %}>{{ label }}</option>
+                          {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="alert alert-secondary mb-0">Немає завдань у цій категорії.</div>
+        {% endif %}
+      </section>
+
+      <section id="week" class="mb-5">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h2 class="h5 mb-0">Цього тижня <span class="badge bg-secondary">{{ week_tasks|length }}</span></h2>
+        </div>
+        {% if week_tasks %}
+          <div class="row g-3">
+            {% for task in week_tasks %}
+              <div class="col-12 col-lg-6">
+                <div class="card h-100 shadow-sm priority-{{ task.priority }}{% if task.status == Task.Status.DONE %} done-task{% endif %}{% if task.is_urgent %} urgent-task{% endif %}">
+                  <div class="card-header d-flex justify-content-between align-items-start">
+                    <div>
+                      <h3 class="h6 mb-1">{{ task.title }}</h3>
+                      <p class="text-muted mb-0">{{ task.category.name|default:'Без категорії' }}</p>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="form-check form-switch mb-0">
+                        <input class="form-check-input task-done-toggle" type="checkbox" id="task-done-{{ task.pk }}" data-task-id="{{ task.pk }}" {% if task.status == Task.Status.DONE %}checked{% endif %}>
+                        <label class="form-check-label text-white small" for="task-done-{{ task.pk }}">Виконано</label>
+                      </div>
+                    </div>
+                    {% if task.priority == 'critical' %}
+                      <span class="badge bg-danger text-dark task-label">{{ task.get_priority_display }}</span>
+                    {% elif task.priority == 'high' %}
+                      <span class="badge bg-info text-dark task-label">{{ task.get_priority_display }}</span>
+                    {% elif task.priority == 'medium' %}
+                      <span class="badge bg-warning text-dark task-label">{{ task.get_priority_display }}</span>
+                    {% else %}
+                      <span class="badge bg-secondary text-dark task-label">{{ task.get_priority_display }}</span>
+                    {% endif %}
+                  </div>
+                  <div class="card-body">
+                    <p class="mb-3 text-truncate">{{ task.description|default:'Немає опису' }}</p>
+                    <div class="mb-3">
+                      {% if task.status == Task.Status.BACKLOG %}
+                        <span class="badge bg-secondary task-label">{{ task.get_status_display }}</span>
+                      {% elif task.status == Task.Status.TODO %}
+                        <span class="badge bg-primary task-label">{{ task.get_status_display }}</span>
+                      {% elif task.status == Task.Status.IN_PROGRESS %}
+                        <span class="badge bg-info task-label">{{ task.get_status_display }}</span>
+                      {% else %}
+                        <span class="badge bg-success task-label">{{ task.get_status_display }}</span>
+                      {% endif %}
+                      <span class="badge bg-light text-dark task-label">Deadline: {{ task.deadline }}</span>
+                      <span class="badge bg-light text-dark task-label">{{ task.deadline_remaining_display }}</span>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                      <span class="badge bg-light text-dark task-label">Planned: {{ task.get_duration_display }}</span>
+                      <span class="badge bg-light text-dark task-label">Actual: {{ task.get_actual_duration_display }}</span>
+                      {% if task.start_time %}
+                        <span class="badge bg-light text-dark task-label">Started: {{ task.start_time|date:'H:i, d.m.Y' }}</span>
+                      {% endif %}
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                      <form action="{% url 'task_start_timer' task.pk %}" method="post" class="m-0">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-success" {% if task.start_time %}disabled{% endif %}>Start Timer</button>
+                      </form>
+                      <form action="{% url 'task_change_status' task.pk %}" method="post" class="d-flex align-items-center m-0">
+                        {% csrf_token %}
+                        <select name="status" class="form-select form-select-sm me-2" style="min-width: 150px;">
+                          {% for value, label in Task.Status.choices %}
+                            <option value="{{ value }}" {% if task.status == value %}selected{% endif %}>{{ label }}</option>
+                          {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="alert alert-secondary mb-0">Немає завдань у цій категорії.</div>
+        {% endif %}
+      </section>
+
+      <section id="future" class="mb-5">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h2 class="h5 mb-0">Майбутні <span class="badge bg-secondary">{{ future_tasks|length }}</span></h2>
+        </div>
+        {% if future_tasks %}
+          <div class="row g-3">
+            {% for task in future_tasks %}
+              <div class="col-12 col-lg-6">
+                <div class="card h-100 shadow-sm priority-{{ task.priority }}{% if task.status == Task.Status.DONE %} done-task{% endif %}{% if task.is_urgent %} urgent-task{% endif %}">
+                  <div class="card-header d-flex justify-content-between align-items-start">
+                    <div>
+                      <h3 class="h6 mb-1">{{ task.title }}</h3>
+                      <p class="text-muted mb-0">{{ task.category.name|default:'Без категорії' }}</p>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="form-check form-switch mb-0">
+                        <input class="form-check-input task-done-toggle" type="checkbox" id="task-done-{{ task.pk }}" data-task-id="{{ task.pk }}" {% if task.status == Task.Status.DONE %}checked{% endif %}>
+                        <label class="form-check-label text-white small" for="task-done-{{ task.pk }}">Виконано</label>
+                      </div>
+                    </div>
+                    {% if task.priority == 'critical' %}
+                      <span class="badge bg-danger text-dark task-label">{{ task.get_priority_display }}</span>
+                    {% elif task.priority == 'high' %}
+                      <span class="badge bg-info text-dark task-label">{{ task.get_priority_display }}</span>
+                    {% elif task.priority == 'medium' %}
+                      <span class="badge bg-warning text-dark task-label">{{ task.get_priority_display }}</span>
+                    {% else %}
+                      <span class="badge bg-secondary text-dark task-label">{{ task.get_priority_display }}</span>
+                    {% endif %}
+                  </div>
+                  <div class="card-body">
+                    <p class="mb-3 text-truncate">{{ task.description|default:'Немає опису' }}</p>
+                    <div class="mb-3">
+                      {% if task.status == Task.Status.BACKLOG %}
+                        <span class="badge bg-secondary task-label">{{ task.get_status_display }}</span>
+                      {% elif task.status == Task.Status.TODO %}
+                        <span class="badge bg-primary task-label">{{ task.get_status_display }}</span>
+                      {% elif task.status == Task.Status.IN_PROGRESS %}
+                        <span class="badge bg-info task-label">{{ task.get_status_display }}</span>
+                      {% else %}
+                        <span class="badge bg-success task-label">{{ task.get_status_display }}</span>
+                      {% endif %}
+                      <span class="badge bg-light text-dark task-label">Deadline: {{ task.deadline }}</span>
+                      <span class="badge bg-light text-dark task-label">{{ task.deadline_remaining_display }}</span>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                      <span class="badge bg-light text-dark task-label">Planned: {{ task.get_duration_display }}</span>
+                      <span class="badge bg-light text-dark task-label">Actual: {{ task.get_actual_duration_display }}</span>
+                      {% if task.start_time %}
+                        <span class="badge bg-light text-dark task-label">Started: {{ task.start_time|date:'H:i, d.m.Y' }}</span>
+                      {% endif %}
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                      <form action="{% url 'task_start_timer' task.pk %}" method="post" class="m-0">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-success" {% if task.start_time %}disabled{% endif %}>Start Timer</button>
+                      </form>
+                      <form action="{% url 'task_change_status' task.pk %}" method="post" class="d-flex align-items-center m-0">
+                        {% csrf_token %}
+                        <select name="status" class="form-select form-select-sm me-2" style="min-width: 150px;">
+                          {% for value, label in Task.Status.choices %}
+                            <option value="{{ value }}" {% if task.status == value %}selected{% endif %}>{{ label }}</option>
+                          {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="alert alert-secondary mb-0">Немає завдань у цій категорії.</div>
+        {% endif %}
+      </section>
+      <script src="{% static 'tasks/js/task_status.js' %}"></script>
+    {% endblock %}

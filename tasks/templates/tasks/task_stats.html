@@ -1,0 +1,131 @@
+{% extends 'tasks/base.html' %}
+{% load static %}
+
+{% block title %}Статистика — Time Planner{% endblock %}
+
+{% block content %}
+  <div class="page-head mb-4 gradient-header p-4 shadow-sm">
+    <div class="d-flex flex-column flex-md-row align-items-start justify-content-between gap-3">
+      <div>
+        <p class="text-uppercase text-primary mb-2 fw-semibold">Аналітика</p>
+        <h1 class="display-5 fw-bold mb-2">Часове навантаження та розподіл задач</h1>
+        <p class="lead text-muted mb-0">Переглядайте, скільки днів займають завдання у плані та як вони розподілені за статусом.</p>
+      </div>
+      <a href="{% url 'task_list' %}" class="btn btn-lg btn-outline-primary">Повернутися до задач</a>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-5">
+    <div class="col-12 col-md-6 col-xl-3">
+      <div class="card shadow-sm stats-card">
+        <div class="card-body">
+          <p class="text-uppercase text-muted mb-2">Усього задач</p>
+          <h2 class="fw-bold mb-1">{{ total_tasks }}</h2>
+          <p class="text-muted mb-0">Штук у вашому плані.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-6 col-xl-3">
+      <div class="card shadow-sm stats-card">
+        <div class="card-body">
+          <p class="text-uppercase text-muted mb-2">Плановий час</p>
+          <h2 class="fw-bold mb-1">{{ total_estimated_hours }} год</h2>
+          <p class="text-muted mb-0">≈ {{ total_estimated_days }} днів</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-6 col-xl-3">
+      <div class="card shadow-sm stats-card">
+        <div class="card-body">
+          <p class="text-uppercase text-muted mb-2">Фактичний час</p>
+          <h2 class="fw-bold mb-1">{{ total_actual_hours }} год</h2>
+          <p class="text-muted mb-0">≈ {{ total_actual_days }} днів</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-6 col-xl-3">
+      <div class="card shadow-sm stats-card">
+        <div class="card-body">
+          <p class="text-uppercase text-muted mb-2">План / Факт</p>
+          <h2 class="fw-bold mb-1">{{ total_estimated_hours }} / {{ total_actual_hours }} год</h2>
+          <p class="text-muted mb-0">Плановий та фактичний час у годинах.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-12 col-xl-7">
+      <div class="card shadow-sm stats-chart-card">
+        <div class="card-body">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div>
+              <h2 class="h5 mb-1">Розподіл планового часу за статусами</h2>
+              <p class="text-muted mb-0">Графік показує, скільки годин займають задачі кожного статусу.</p>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="taskDurationChart" height="280"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-xl-5">
+      <div class="card shadow-sm stats-breakdown-card">
+        <div class="card-body">
+          <h2 class="h5 mb-3">Час за статусами</h2>
+          <ul class="list-group list-group-flush">
+            {% for row in status_rows %}
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                  <span class="legend-dot" style="background: {{ row.color }}"></span>
+                  {{ row.name }}
+                </div>
+                <div class="text-end">
+                  <div class="fw-semibold">{{ row.hours }} год</div>
+                  <div class="text-muted small">{{ row.days }} дн.</div>
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const labels = JSON.parse('{{ status_labels|escapejs }}');
+      const values = JSON.parse('{{ status_values|escapejs }}');
+      const colors = JSON.parse('{{ status_colors|escapejs }}');
+
+      const ctx = document.getElementById('taskDurationChart');
+      if (!ctx) return;
+      new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: values,
+            backgroundColor: colors,
+            borderColor: '#ffffff',
+            borderWidth: 2,
+          }],
+        },
+        options: {
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                boxWidth: 14,
+                padding: 16,
+                color: '#e2e8f0',
+              },
+            },
+          },
+        },
+      });
+    });
+  </script>
+{% endblock %}
