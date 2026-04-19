@@ -1,0 +1,61 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pyo
+*.pyd
+*.py[cod]
+*.egg-info/
+*.egg
+.eggs/
+*.manifest
+*.spec
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Django
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+db.sqlite3
+media/
+/staticfiles/
+
+# Environment
+.env
+.env.*
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# JetBrains
+.idea/
+
+# Coverage
+htmlcov/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*,cover
+# Pytest
+.pytest_cache/
+
+# Distribution
+build/
+dist/
+
+# Ignore node_modules if present
+node_modules/
