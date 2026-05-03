@@ -54,7 +54,7 @@ body {
 .stats-card,
 .stats-chart-card,
 .stats-breakdown-card {
-  background: rgba(10, 16, 32, 0.78);
+  background: rgba(123, 129, 146, 0.78);
   border: 1px solid rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(12px);
 }

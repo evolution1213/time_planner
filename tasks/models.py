@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
@@ -30,6 +31,13 @@ class Task(models.Model):
         IN_PROGRESS = 'in_progress', 'In Progress'
         DONE = 'done', 'Done'
 
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='tasks',
+        null=True,
+        blank=True,
+    )
     title = models.CharField(max_length=200)
     category = models.ForeignKey(
         Category,
