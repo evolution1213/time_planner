@@ -34,4 +34,4 @@ class TaskSerializer(serializers.ModelSerializer):
         return obj.is_urgent()
 
     def get_formatted_deadline(self, obj):
-        return obj.deadline.strftime('%Y-%m-%d')
+        return obj.deadline.strftime('%Y-%m-%d %H:%M')

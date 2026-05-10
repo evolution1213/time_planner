@@ -41,6 +41,13 @@ class TaskCreateView(CreateView):
     template_name = 'tasks/task_form.html'
     success_url = reverse_lazy('task_list')
 
+    def form_valid(self, form):
+        task = form.save(commit=False)
+        if self.request.user.is_authenticated:
+            task.owner = self.request.user
+        task.save()
+        return super().form_valid(form)
+
 
 class TaskStatsView(TemplateView):
     template_name = 'tasks/task_stats.html'

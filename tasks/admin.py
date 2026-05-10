@@ -1,12 +1,24 @@
 from django.contrib import admin
 
-from .models import Category, Task
+from .models import Category, Task, TaskNotification, UserProfile
 
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'description')
     search_fields = ('name',)
+
+
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'telegram_chat_id')
+    search_fields = ('user__username', 'telegram_chat_id')
+
+
+@admin.register(TaskNotification)
+class TaskNotificationAdmin(admin.ModelAdmin):
+    list_display = ('task', 'sent_at')
+    search_fields = ('task__title',)
 
 
 @admin.register(Task)

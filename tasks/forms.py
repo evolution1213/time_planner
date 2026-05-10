@@ -5,9 +5,9 @@ from .models import Category, Task
 
 
 class TaskForm(forms.ModelForm):
-    deadline = forms.DateField(
-        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-        initial=timezone.localdate,
+    deadline = forms.DateTimeField(
+        widget=forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
+        initial=timezone.localtime,
     )
 
     class Meta:

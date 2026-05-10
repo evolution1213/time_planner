@@ -2,6 +2,8 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils import timezone
 
 
@@ -16,6 +18,30 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='profile',
+    )
+    telegram_chat_id = models.CharField(max_length=64, blank=True, null=True)
+
+    def __str__(self):
+        return f'Profile for {self.user.username}'
+
+
+class TaskNotification(models.Model):
+    task = models.OneToOneField(
+        'Task',
+        on_delete=models.CASCADE,
+        related_name='deadline_notification',
+    )
+    sent_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Notification sent for {self.task.title} at {self.sent_at}'
 
 
 class Task(models.Model):
@@ -59,7 +85,7 @@ class Task(models.Model):
     )
     start_time = models.DateTimeField(null=True, blank=True)
     end_time = models.DateTimeField(null=True, blank=True)
-    deadline = models.DateField(default=timezone.localdate)
+    deadline = models.DateTimeField(default=timezone.localtime)
     duration = models.DurationField(
         default=timedelta(hours=1),
         help_text='Planned duration for the task',
@@ -79,20 +105,23 @@ class Task(models.Model):
 
     @property
     def is_overdue(self):
-        return self.status != self.Status.DONE and self.deadline < timezone.localdate()
+        return self.status != self.Status.DONE and self.deadline < timezone.localtime()
 
     def is_urgent(self):
         if self.status == self.Status.DONE:
             return False
-        return self.deadline <= timezone.localdate() + timedelta(days=1)
+        return self.deadline <= timezone.localtime() + timedelta(days=1)
 
     def deadline_remaining(self):
-        return self.deadline - timezone.localdate()
+        return self.deadline - timezone.localtime()
 
     def deadline_remaining_display(self):
         remaining = self.deadline_remaining()
-        if remaining.days < 0:
-            return f'Overdue by {abs(remaining.days)}d'
+        if remaining.total_seconds() < 0:
+            hours = abs(int(remaining.total_seconds() // 3600))
+            if hours:
+                return f'Overdue by {hours}h'
+            return 'Overdue'
         if remaining.days == 0:
             return 'Today'
         return f'{remaining.days}d'
@@ -114,3 +143,9 @@ class Task(models.Model):
 
     def get_actual_duration_display(self):
         return self.format_duration(self.actual_duration)
+
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created and not hasattr(instance, 'profile'):
+        UserProfile.objects.create(user=instance)
