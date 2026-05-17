@@ -102,8 +102,14 @@ body {
   background: rgba(255, 255, 255, 0.08);
 }
 
-.text-muted,
-.text-light,
+.text-muted {
+  color: #cbd5e1 !important;
+}
+
+.text-light {
+  color: #f8fafc !important;
+}
+
 .badge.bg-light,
 .task-category,
 .task-label {
