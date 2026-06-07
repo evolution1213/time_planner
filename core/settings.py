@@ -29,7 +29,11 @@ SECRET_KEY = 'django-insecure-u2ty_!dj7o*-!#-qpvgo$(na_760ex41%vdvns*ssz4b&kyv(@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['time-planner-2tvi.onrender.com']
+ALLOWED_HOSTS = [
+    'time-planner-2tvi.onrender.com',
+    'localhost',
+    '127.0.0.1',
+]
 
 
 # Application definition
